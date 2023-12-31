@@ -2,8 +2,11 @@
 
 const mongoose = require("mongoose");
 const { countConnect } = require("../helpers/check.connect");
+const {
+  database: { host, name, port },
+} = require("../configs");
 
-const connectString = "mongodb://localhost:27017/shopDev";
+const connectString = `mongodb://${host}:${port}/${name}`;
 
 class Database {
   constructor() {
@@ -11,7 +14,7 @@ class Database {
   }
 
   connect(type = "mongodb") {
-    if (process.env.NODE_ENV === "dev") {
+    if (process.env.NODE_ENV === "develop") {
       mongoose.set("debug", true);
       mongoose.set("debug", { color: true });
     }

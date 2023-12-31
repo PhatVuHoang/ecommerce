@@ -1,9 +1,10 @@
 const app = require("./src/app");
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
+const ENV = process.env.NODE_ENV || "develop";
 
 const server = app.listen(PORT, () => {
-  console.log(`Server started at port ${PORT}`);
+  console.log(`Server started at port ${PORT} enviroment ${ENV}`);
 });
 
 // server exit
