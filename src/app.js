@@ -11,7 +11,9 @@ app.use(helmet());
 app.use(compression());
 
 // databases
-
+require("./databases/init.mongodb");
+const { checkOverload } = require("./helpers/check.connect");
+checkOverload();
 // routes
 
 // handle errors
