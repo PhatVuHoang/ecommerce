@@ -3,7 +3,7 @@
 const shopModel = require("../models/shop.model");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
-const RoleShop = require("../constants/roles");
+const { ROLESHOP } = require("../constants");
 const KeyTokenService = require("./keyToken.service");
 const { createTokenPair } = require("../auth/authUtils");
 const { getInfoData } = require("../utils");
@@ -14,7 +14,7 @@ class AccessService {
       const holderShop = await shopModel.findOne({ email }).lean();
       if (holderShop) {
         return {
-          code: "EXISTED",
+          code: "ACCOUNT_EXISTED",
           message: "Shop already registered!",
         };
       }
@@ -24,7 +24,7 @@ class AccessService {
         name,
         email,
         password: passwordHash,
-        roles: [RoleShop.SHOP],
+        roles: [ROLESHOP.SHOP],
       });
       if (newShop) {
         const privateKey = crypto.randomBytes(64).toString("hex");
@@ -64,7 +64,6 @@ class AccessService {
       return {
         code: "ERROR",
         message: error.message,
-        status: "error",
       };
     }
   };
