@@ -1,20 +1,12 @@
 "use strict";
 
-const StatusCode = {
-  OK: 200,
-  CREATED: 201,
-};
-
-const ReasonStatusCode = {
-  OK: "Success",
-  CREATED: "Created",
-};
+const { ReasonPhrases, StatusCodes } = require("../utils/httpStatusCode");
 
 class SuccessResponse {
   constructor({
     message,
-    statusCode = StatusCode.OK,
-    reasonStatusCode = ReasonStatusCode.OK,
+    statusCode = StatusCodes.OK,
+    reasonStatusCode = ReasonPhrases.OK,
     metadata = {},
   }) {
     this.message = message ? message : reasonStatusCode;
@@ -39,8 +31,8 @@ class OK extends SuccessResponse {
 class Created extends SuccessResponse {
   constructor({
     message,
-    statusCode = StatusCode.CREATED,
-    reasonStatusCode = ReasonStatusCode.CREATED,
+    statusCode = StatusCodes.CREATED,
+    reasonStatusCode = ReasonPhrases.CREATED,
     metadata = {},
     options = {},
   }) {
