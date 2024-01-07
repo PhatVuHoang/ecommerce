@@ -9,6 +9,6 @@ const router = express.Router();
 router.use(apiKey);
 router.use(permission("0000"));
 
-router.use("/v1/api", access);
+router.use("/authentication", access);
 
 module.exports = router;

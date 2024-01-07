@@ -23,7 +23,7 @@ const { checkOverload } = require("./helpers/check.connect");
 checkOverload();
 
 // routes
-app.use("/", routes);
+app.use("/v1/api/", routes);
 
 // handle errors
 app.use((req, res, next) => {
