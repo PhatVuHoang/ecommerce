@@ -92,6 +92,8 @@ class AccessService {
       tokens,
     };
   };
+
+  static logout = async ({ email, password, refreshToken = null }) => {};
 }
 
 module.exports = AccessService;

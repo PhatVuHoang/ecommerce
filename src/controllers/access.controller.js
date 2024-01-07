@@ -20,6 +20,8 @@ class AccessController {
       metadata: response,
     }).send(res);
   }
+
+  async logout(req, res, next) {}
 }
 
 module.exports = new AccessController();
