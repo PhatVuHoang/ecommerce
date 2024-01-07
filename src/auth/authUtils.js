@@ -34,6 +34,24 @@ const authentication = asyncHandler(async (req, res, next) => {
     throw new NotFoundError("Not found keyStore");
   }
 
+  if (req.headers[HEADER.REFRESH_TOKEN]) {
+    try {
+      const refreshToken = req.headers[HEADER.REFRESH_TOKEN];
+      const decodeUser = jwt.verify(refreshToken, keyStore.privateKey);
+
+      if (userId !== decodeUser.userId) {
+        throw new AuthFailureError("Invalid user id");
+      }
+
+      req.keyStore = keyStore;
+      req.user = decodeUser;
+      req.refreshToken = refreshToken;
+      return next();
+    } catch (error) {
+      throw error;
+    }
+  }
+
   const accessToken = req.headers[HEADER.AUTHORIZATION];
   if (!accessToken) {
     throw new AuthFailureError("Invalid request");
@@ -54,7 +72,12 @@ const authentication = asyncHandler(async (req, res, next) => {
   }
 });
 
+const verifyJwt = async (token, keySecret) => {
+  return await jwt.verify(token, keySecret);
+};
+
 module.exports = {
   createTokenPair,
   authentication,
+  verifyJwt,
 };

@@ -14,7 +14,6 @@ class AccessController {
 
   async login(req, res, next) {
     const response = await AccessService.login(req.body);
-
     new OK({
       message: "login success",
       metadata: response,
@@ -25,6 +24,18 @@ class AccessController {
     const response = await AccessService.logout(req.keyStore);
     new OK({
       message: "logout success",
+      metadata: response,
+    }).send(res);
+  }
+
+  async handleRefreshToken(req, res, next) {
+    const response = await AccessService.handleRefreshToken({
+      refreshToken: req.refreshToken,
+      user: req.user,
+      keyStore: req.keyStore,
+    });
+    new Created({
+      message: "Get token success",
       metadata: response,
     }).send(res);
   }
