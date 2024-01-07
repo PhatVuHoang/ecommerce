@@ -93,7 +93,10 @@ class AccessService {
     };
   };
 
-  static logout = async ({ email, password, refreshToken = null }) => {};
+  static logout = async (keyStore) => {
+    const delKey = await KeyTokenService.removeKeyById(keyStore._id);
+    return delKey;
+  };
 }
 
 module.exports = AccessService;

@@ -40,7 +40,9 @@ const authentication = asyncHandler(async (req, res, next) => {
   }
 
   try {
-    const decodeUser = jwt.verify(accessToken, keyStore.publicKey);
+    const token = accessToken.split(" ")[1];
+    const decodeUser = jwt.verify(token, keyStore.publicKey);
+
     if (userId !== decodeUser.userId) {
       throw new AuthFailureError("Invalid user id");
     }
