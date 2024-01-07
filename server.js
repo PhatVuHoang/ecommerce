@@ -1,13 +1,20 @@
 const app = require("./src/app");
+const {
+  app: { port },
+} = require("./src/configs");
 
-const PORT = process.env.PORT || 3000;
-const ENV = process.env.NODE_ENV || "develop";
-
-const server = app.listen(PORT, () => {
-  console.log(`Server started at port ${PORT} enviroment ${ENV}`);
+const enviroment = process.env.NODE_ENV || "develop";
+const server = app.listen(port, () => {
+  console.log(
+    `${
+      enviroment === "develop"
+        ? `Server is listening on localhost:${port}`
+        : "Server started"
+    }`
+  );
 });
 
 // server exit
 process.on("SIGINT", () => {
-  server.close(() => console.log("Exit server"));
+  server.close(() => console.log("Server exited"));
 });
