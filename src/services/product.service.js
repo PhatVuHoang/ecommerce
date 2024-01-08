@@ -7,6 +7,13 @@ const {
   electronic,
   furniture,
 } = require("../models/product.model");
+const {
+  findAllDraftForShop,
+  publishProductByShop,
+  unPublishProductByShop,
+  findAllPublishForShop,
+  searchProductByUser,
+} = require("../models/repositories/product.repository");
 
 class ProductFactory {
   static productRegistry = {}; // key - class
@@ -19,8 +26,29 @@ class ProductFactory {
     if (!productClass) {
       throw new BadRequestError(`Invalid Product Type: ${type}`);
     }
-
     return new productClass(payload).createProduct();
+  }
+
+  static async findAllDraftForShop({ product_shop, limit = 50, skip = 0 }) {
+    const query = { product_shop, isDraft: true };
+    return await findAllDraftForShop({ query, skip, limit });
+  }
+
+  static async publishProductByShop({ product_shop, product_id }) {
+    return await publishProductByShop({ product_shop, product_id });
+  }
+
+  static async unPublishProductByShop({ product_shop, product_id }) {
+    return await unPublishProductByShop({ product_shop, product_id });
+  }
+
+  static async findAllPublishForShop({ product_shop, limit = 50, skip = 0 }) {
+    const query = { product_shop, isPublish: true };
+    return await findAllPublishForShop({ query, skip, limit });
+  }
+
+  static async getListSearchProducts(keySearch) {
+    return await searchProductByUser({ keySearch });
   }
 }
 

@@ -10,7 +10,7 @@ const router = express.Router();
 router.use(apiKey);
 router.use(permission("0000"));
 
-router.use("/authentication", access);
 router.use("/product", product);
+router.use("/authentication", access);
 
 module.exports = router;
