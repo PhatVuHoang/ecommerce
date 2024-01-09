@@ -1,12 +1,7 @@
 "use strict";
 
 const { Types } = require("mongoose");
-const {
-  product,
-  electronic,
-  furniture,
-  clothing,
-} = require("../product.model");
+const { product } = require("../product.model");
 const { getSelectData, getUnSelectData } = require("../../utils");
 
 const findAllDraftForShop = async ({ query, limit, page }) => {
@@ -59,6 +54,7 @@ const queryProduct = async ({ query, limit, page }) => {
     .sort({ updatedAt: -1 })
     .skip(skip)
     .limit(limit)
+    .select(getUnSelectData(["__v"]))
     .lean();
 };
 
@@ -85,6 +81,7 @@ const searchProductByUser = async ({ keySearch, page, limit }) => {
       },
     })
     .skip(skip)
+    .select(getUnSelectData(["__v"]))
     .lean();
   return result;
 };
@@ -107,6 +104,17 @@ const findProduct = async ({ product_id, unSelect }) => {
   return await product.findById(product_id).select(getUnSelectData(unSelect));
 };
 
+const updateProductById = async ({
+  productId,
+  payload,
+  model,
+  isNew = true,
+}) => {
+  return await model.findByIdAndUpdate(productId, payload, {
+    new: isNew,
+  });
+};
+
 module.exports = {
   findAllDraftForShop,
   publishProductByShop,
@@ -115,4 +123,5 @@ module.exports = {
   searchProductByUser,
   findAllProducts,
   findProduct,
+  updateProductById,
 };

@@ -15,7 +15,9 @@ const {
   searchProductByUser,
   findAllProducts,
   findProduct,
+  updateProductById,
 } = require("../models/repositories/product.repository");
+const { updateNestedObject, removeUndefinedObject } = require("../utils");
 
 class ProductFactory {
   static productRegistry = {}; // key - class
@@ -31,7 +33,13 @@ class ProductFactory {
     return new productClass(payload).createProduct();
   }
 
-  static async updateProduct() {}
+  static async updateProduct(type, productId, payload) {
+    const productClass = ProductFactory.productRegistry[type];
+    if (!productClass) {
+      throw new BadRequestError(`Invalid Product Type: ${type}`);
+    }
+    return new productClass(payload).updateProduct(productId);
+  }
 
   static async findAllDraftForShop({ product_shop, limit = 50, page = 1 }) {
     const query = { product_shop, isDraft: true };
@@ -102,6 +110,10 @@ class Product {
   async createProduct(product_id) {
     return await product.create({ ...this, _id: product_id });
   }
+
+  async updateProduct(productId, payload) {
+    return await updateProductById({ productId, payload, model: product });
+  }
 }
 
 class Clothing extends Product {
@@ -120,6 +132,19 @@ class Clothing extends Product {
     }
 
     return newProduct;
+  }
+
+  async updateProduct(productId) {
+    const objectParams = removeUndefinedObject(updateNestedObject(this));
+    if (objectParams.product_attributes) {
+      await updateProductById({
+        productId,
+        payload: objectParams,
+        model: clothing,
+      });
+    }
+    const updateProduct = await super.updateProduct(productId, objectParams);
+    return updateProduct;
   }
 }
 
