@@ -19,8 +19,10 @@ app.use(
 
 // databases
 require("./databases/init.mongodb");
-const { checkOverload } = require("./helpers/check.connect");
-checkOverload();
+if (process.env.NODE_ENV === "production") {
+  const { checkOverload } = require("./helpers/check.connect");
+  checkOverload();
+}
 
 // routes
 app.use("/v1/api/", routes);
