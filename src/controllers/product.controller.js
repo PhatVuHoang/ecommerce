@@ -34,9 +34,15 @@ class ProductController {
   };
 
   searchProducts = async (req, res, next) => {
+    const result = await ProductService.getListSearchProducts({
+      keySearch: req.query.keySearch,
+    });
     new OK({
       message: "Get list products success",
-      metadata: await ProductService.getListSearchProducts(req.query.keySearch),
+      metadata: result,
+      options: {
+        total: result.length,
+      },
     }).send(res);
   };
 
@@ -47,12 +53,16 @@ class ProductController {
    * @return { JSON }
    */
   getAllDraftsForShop = async (req, res, next) => {
+    const result = await ProductService.findAllDraftForShop({
+      ...req.query,
+      product_shop: req.user.userId,
+    });
     new OK({
       message: "Get list success",
-      metadata: await ProductService.findAllDraftForShop({
-        ...req.params,
-        product_shop: req.user.userId,
-      }),
+      metadata: result,
+      options: {
+        total: result.length,
+      },
     }).send(res);
   };
 
@@ -63,11 +73,35 @@ class ProductController {
    * @return { JSON }
    */
   getAllPublishForShop = async (req, res, next) => {
+    const result = await ProductService.findAllPublishForShop({
+      ...req.query,
+      product_shop: req.user.userId,
+    });
     new OK({
       message: "Get list success",
-      metadata: await ProductService.findAllPublishForShop({
-        ...req.params,
-        product_shop: req.user.userId,
+      metadata: result,
+      options: {
+        total: result.length,
+      },
+    }).send(res);
+  };
+
+  getAllProducts = async (req, res, next) => {
+    const result = await ProductService.findAllProducts(req.query);
+    new OK({
+      message: "Get list products success",
+      metadata: result,
+      options: {
+        total: result.length,
+      },
+    }).send(res);
+  };
+
+  getProduct = async (req, res, next) => {
+    new OK({
+      message: "Get product success",
+      metadata: await ProductService.findProduct({
+        product_id: req.params.id,
       }),
     }).send(res);
   };

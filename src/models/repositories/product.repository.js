@@ -7,9 +7,10 @@ const {
   furniture,
   clothing,
 } = require("../product.model");
+const { getSelectData, getUnSelectData } = require("../../utils");
 
-const findAllDraftForShop = async ({ query, limit, skip }) => {
-  return await queryProduct({ query, limit, skip });
+const findAllDraftForShop = async ({ query, limit, page }) => {
+  return await queryProduct({ query, limit, page });
 };
 
 const publishProductByShop = async ({ product_shop, product_id }) => {
@@ -46,11 +47,12 @@ const unPublishProductByShop = async ({ product_shop, product_id }) => {
   return modifiedCount;
 };
 
-const findAllPublishForShop = async ({ query, limit, skip }) => {
-  return await queryProduct({ query, limit, skip });
+const findAllPublishForShop = async ({ query, limit, page }) => {
+  return await queryProduct({ query, limit, page });
 };
 
-const queryProduct = async ({ query, limit, skip }) => {
+const queryProduct = async ({ query, limit, page }) => {
+  const skip = (page - 1) * limit;
   return await product
     .find(query)
     .populate("product_shop", "name email -_id")
@@ -60,7 +62,8 @@ const queryProduct = async ({ query, limit, skip }) => {
     .lean();
 };
 
-const searchProductByUser = async ({ keySearch }) => {
+const searchProductByUser = async ({ keySearch, page, limit }) => {
+  const skip = (page - 1) * limit;
   const regexSearch = new RegExp(keySearch);
   const result = await product
     .find(
@@ -81,8 +84,27 @@ const searchProductByUser = async ({ keySearch }) => {
         $meta: "textScore",
       },
     })
+    .skip(skip)
     .lean();
   return result;
+};
+
+const findAllProducts = async ({ limit, sort, page, filter, select }) => {
+  const skip = (page - 1) * limit;
+  const sortBy = sort === "ctime" ? { _id: -1 } : { _id: 1 };
+  const products = await product
+    .find(filter)
+    .sort(sortBy)
+    .skip(skip)
+    .limit(limit)
+    .select(getSelectData(select))
+    .lean();
+
+  return products;
+};
+
+const findProduct = async ({ product_id, unSelect }) => {
+  return await product.findById(product_id).select(getUnSelectData(unSelect));
 };
 
 module.exports = {
@@ -91,4 +113,6 @@ module.exports = {
   unPublishProductByShop,
   findAllPublishForShop,
   searchProductByUser,
+  findAllProducts,
+  findProduct,
 };

@@ -13,6 +13,8 @@ const {
   unPublishProductByShop,
   findAllPublishForShop,
   searchProductByUser,
+  findAllProducts,
+  findProduct,
 } = require("../models/repositories/product.repository");
 
 class ProductFactory {
@@ -29,9 +31,11 @@ class ProductFactory {
     return new productClass(payload).createProduct();
   }
 
-  static async findAllDraftForShop({ product_shop, limit = 50, skip = 0 }) {
+  static async updateProduct() {}
+
+  static async findAllDraftForShop({ product_shop, limit = 50, page = 1 }) {
     const query = { product_shop, isDraft: true };
-    return await findAllDraftForShop({ query, skip, limit });
+    return await findAllDraftForShop({ query, page, limit });
   }
 
   static async publishProductByShop({ product_shop, product_id }) {
@@ -42,13 +46,35 @@ class ProductFactory {
     return await unPublishProductByShop({ product_shop, product_id });
   }
 
-  static async findAllPublishForShop({ product_shop, limit = 50, skip = 0 }) {
+  static async findAllPublishForShop({ product_shop, limit = 50, page = 1 }) {
     const query = { product_shop, isPublish: true };
-    return await findAllPublishForShop({ query, skip, limit });
+    return await findAllPublishForShop({ query, page, limit });
   }
 
-  static async getListSearchProducts(keySearch) {
-    return await searchProductByUser({ keySearch });
+  static async getListSearchProducts({ keySearch, limit = 50, page = 1 }) {
+    return await searchProductByUser({ keySearch, limit, page });
+  }
+
+  static async findAllProducts({
+    limit = 50,
+    sort = "ctime",
+    page = 1,
+    filter = { isPublish: true },
+  }) {
+    return await findAllProducts({
+      filter,
+      limit,
+      page,
+      sort,
+      select: ["product_name", "product_price", "product_thumb"],
+    });
+  }
+
+  static async findProduct({ product_id }) {
+    return await findProduct({
+      product_id,
+      unSelect: ["__v"],
+    });
   }
 }
 
