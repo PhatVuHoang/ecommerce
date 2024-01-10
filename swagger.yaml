@@ -1,0 +1,401 @@
+openapi: 3.0.3
+info:
+  title: ECOMMERCE - NODEJS
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000/v1/api
+  - url: http://localhost:3001/v1/api
+tags:
+  - name: authentication
+  - name: product
+security:
+  - x-api-key: []
+
+paths:
+  /authentication/signup:
+    post:
+      tags:
+        - authentication
+      summary: Sign up a shop
+      operationId: signup
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SignUpRequest"
+        required: true
+      responses:
+        "201":
+          description: Sign up success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "registered success"
+                  status:
+                    type: number
+                    example: 201
+                  metadata:
+                    $ref: "#/components/schemas/SignUpResponse"
+  /authentication/login:
+    post:
+      tags:
+        - authentication
+      summary: Login a shop
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+        required: true
+      responses:
+        "200":
+          description: Login success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "login success"
+                  status:
+                    type: number
+                    example: 200
+                  metadata:
+                    $ref: "#/components/schemas/LoginResponse"
+  /authentication/logout:
+    post:
+      tags:
+        - authentication
+      summary: Logout a shop
+      operationId: logout
+      security:
+        - BearerAuth: []
+        - x-api-key: []
+      parameters:
+        - name: x-client-id
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Logout success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "logout success"
+                  status:
+                    type: number
+                    example: 200
+                  metadata:
+                    $ref: "#/components/schemas/LogoutResponse"
+  /authentication/refresh-token:
+    post:
+      tags:
+       - authentication
+      summary: Get a new access token and refresh token
+      operationId: refreshToken
+      parameters:
+        - name: x-rtoken
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        "201":
+          description: Get token success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Get token success
+                  status:
+                    type: number
+                    example: 201
+                  metadata:
+                    $ref: "#/components/schemas/RefreshTokenResponse"
+  /product:
+    post:
+      tags:
+        - product
+      summary: create a product
+      operationId: createProduct
+      parameters:
+        - name: x-client-id
+          in: header
+          schema:
+            type: string
+          required: true
+      
+      security:
+        - BearerAuth: []
+        - x-api-key: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProductRequest"
+      responses:
+        "201":
+          description: Create product success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Create product success
+                  status:
+                    type: number
+                    example: 201
+                  metadata:
+                    $ref: "#/components/schemas/ProductResponse"
+  /product/publish/{id}:
+    post:
+      tags:
+        - product
+      summary: Publish product
+      operationId: publishProduct
+      parameters:
+        - name: x-client-id
+          in: header
+          schema:
+            type: string
+          required: true
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      security:
+        - BearerAuth: []
+        - x-api-key: []
+      responses:
+        "200":
+          description: Publish product success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Publish product success
+                  status:
+                    type: number
+                    example: 200
+                  metadata:
+                    $ref: "#/components/schemas/ProductResponse"
+  /product/publish:
+    get:
+      tags:
+        - product
+      summary: Get publish products
+      operationId: getPublishProducts
+      parameters:
+        - name: x-client-id
+          in: header
+          schema:
+            type: string
+          required: true
+      security:
+        - BearerAuth: []
+        - x-api-key: []
+      responses:
+        "200":
+          description: Get list success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Get list success
+                  status:
+                    type: number
+                    example: 200
+                  metadata:
+                    $ref: "#/components/schemas/ProductResponse"
+
+components:
+  schemas:
+    SignUpRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+
+    SignUpResponse:
+      type: object
+      properties:
+        shop:
+          type: object
+          properties:
+            _id:
+              type: string
+            name:
+              type: string
+            email:
+              type: string
+        tokens:
+          type: object
+          properties:
+            accessToken:
+              type: string
+            refreshToken:
+              type: string
+
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+
+    LoginResponse:
+      properties:
+        shop:
+          type: object
+          properties:
+            _id:
+              type: string
+            name:
+              type: string
+            email:
+              type: string
+        tokens:
+          type: object
+          properties:
+            accessToken:
+              type: string
+            refreshToken:
+              type: string
+
+    LogoutResponse:
+      properties:
+        acknowledged:
+          type: boolean
+        deletedCount:
+          type: number
+
+    RefreshTokenResponse:
+      type: object
+      properties:
+        user:
+          type: object
+          properties:
+            userId:
+              type: string
+            email:
+              type: string
+        tokens:
+          type: object
+          properties:
+            accessToken:
+              type: string
+            refreshToken:
+              type: string
+
+    ProductAttribute:
+      type: object
+      properties:
+        brand:
+          type: string
+        size:
+          type: string
+        material:
+          type: string
+
+    ProductRequest:
+      type: object
+      properties:
+        product_name:
+          type: string
+        product_description:
+          type: string
+        product_price:
+          type: number
+        product_type:
+          enum:
+            - Clothing
+            - Electronic
+            - Furniture
+        product_thumb:
+          type: string
+        product_quantity:
+          type: number
+        product_attributes:
+          $ref: "#/components/schemas/ProductAttribute"
+    
+    ProductResponse:
+        type: object
+        properties:
+          product_name:
+            type: string
+          product_thumb:
+            type: string
+          product_description:
+            type: string
+          product_price:
+            type: number
+          product_quantity:
+            type: number
+          product_type:
+            type: string
+          product_shop:
+            type: string
+          product_attributes:
+            type: object
+            properties:
+              brand:
+                type: string
+              size:
+                type: string
+              material:
+                type: string
+          product_ratingsAverage:
+            type: number
+          product_variation:
+            type: array
+          isDraft:
+            type: boolean
+          isPublish:
+            type: boolean
+          _id:
+            type: string
+          createdAt:
+            type: string
+          updatedAt:
+            type: string
+          product_slug:
+            type: string
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    x-api-key:
+      type: apiKey
+      name: x-api-key
+      in: header
