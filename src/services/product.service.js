@@ -165,6 +165,19 @@ class Electronic extends Product {
 
     return newProduct;
   }
+
+  async updateProduct(productId) {
+    const objectParams = removeUndefinedObject(updateNestedObject(this));
+    if (objectParams.product_attributes) {
+      await updateProductById({
+        productId,
+        payload: objectParams,
+        model: electronic,
+      });
+    }
+    const updateProduct = await super.updateProduct(productId, objectParams);
+    return updateProduct;
+  }
 }
 
 class Furniture extends Product {
@@ -183,6 +196,19 @@ class Furniture extends Product {
     }
 
     return newProduct;
+  }
+
+  async updateProduct(productId) {
+    const objectParams = removeUndefinedObject(updateNestedObject(this));
+    if (objectParams.product_attributes) {
+      await updateProductById({
+        productId,
+        payload: objectParams,
+        model: furniture,
+      });
+    }
+    const updateProduct = await super.updateProduct(productId, objectParams);
+    return updateProduct;
   }
 }
 
