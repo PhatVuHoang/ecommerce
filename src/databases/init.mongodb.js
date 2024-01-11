@@ -3,10 +3,10 @@
 const mongoose = require("mongoose");
 const { countConnect } = require("../helpers/check.connect");
 const {
-  database: { host, name, port },
+  database: { uri },
 } = require("../configs");
 
-const connectString = `mongodb://${host}:${port}/${name}`;
+const connectString = uri;
 
 class Database {
   constructor() {

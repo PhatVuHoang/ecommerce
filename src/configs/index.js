@@ -5,9 +5,7 @@ const develop = {
     port: parseInt(process.env.PORT_DEV, 10) || 3000,
   },
   database: {
-    host: process.env.MONGODB_HOST_DEV || "localhost",
-    port: parseInt(process.env.MONGODB_PORT_DEV, 10) || 27017,
-    name: process.env.MONGODB_NAME_DEV || "devDB",
+    uri: process.env.MONGODB_URI_DEV,
   },
 };
 
@@ -16,9 +14,7 @@ const production = {
     port: parseInt(process.env.PORT_PROD, 10) || 3000,
   },
   database: {
-    host: process.env.MONGODB_HOST_PROD || "localhost",
-    port: parseInt(process.env.MONGODB_PORT_PROD, 10) || 27017,
-    name: process.env.MONGODB_NAME_PROD || "prodDB",
+    uri: process.env.MONGODB_URI_PROD,
   },
 };
 
