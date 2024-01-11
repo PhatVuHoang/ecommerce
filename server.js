@@ -8,7 +8,10 @@ const server = app.listen(port, () => {
   console.log(
     `${
       enviroment === "develop"
-        ? `Server is listening on localhost:${port}`
+        ? `
+          Server is listening on http://localhost:${port}/
+          Swagger started on http://localhost:${port}/docs
+        `
         : "Server started"
     }`
   );

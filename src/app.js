@@ -7,18 +7,35 @@ const swaggerJSDoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
 const cors = require("cors");
 const routes = require("./routes");
-const fs = require("fs");
-const path = require("path");
-const yaml = require("yaml");
 
-const file = fs.readFileSync(path.resolve("swagger.yaml"), "utf-8");
-const swaggerDocument = yaml.parse(file);
+const options = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "Ecommerce Project",
+      version: "1.0.0",
+    },
+    servers: [
+      {
+        url: "http://localhost:3000/v1/api",
+        description: "Local server",
+      },
+    ],
+    security: [
+      {
+        "x-api-key": [],
+      },
+    ],
+  },
+  apis: ["./swagger.yaml"],
+};
+const openapiSpecification = swaggerJSDoc(options);
 
 const app = express();
 
 // middlewares
 app.use(cors());
-app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(openapiSpecification));
 app.use(morgan("dev"));
 app.use(helmet());
 app.use(compression());

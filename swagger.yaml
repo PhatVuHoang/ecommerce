@@ -1,10 +1,9 @@
-openapi: 3.0.3
+openapi: 3.0.0
 info:
   title: ECOMMERCE - NODEJS
   version: 1.0.0
 servers:
   - url: http://localhost:3000/v1/api
-  - url: http://localhost:3001/v1/api
 tags:
   - name: authentication
   - name: product
@@ -102,11 +101,16 @@ paths:
   /authentication/refresh-token:
     post:
       tags:
-       - authentication
+        - authentication
       summary: Get a new access token and refresh token
       operationId: refreshToken
       parameters:
         - name: x-rtoken
+          in: header
+          required: true
+          schema:
+            type: string
+        - name: x-client-id
           in: header
           required: true
           schema:
@@ -139,7 +143,7 @@ paths:
           schema:
             type: string
           required: true
-      
+
       security:
         - BearerAuth: []
         - x-api-key: []
@@ -163,7 +167,48 @@ paths:
                     type: number
                     example: 201
                   metadata:
-                    $ref: "#/components/schemas/ProductResponse"
+                    $ref: "#/components/schemas/CreateProductResponse"
+    get:
+      tags:
+        - "product"
+      summary: get all product
+      operationId: getAllProduct
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: number
+            default: 1
+          required: true
+        - name: limit
+          in: query
+          schema:
+            type: number
+            default: 50
+          required: true
+      responses:
+        "200":
+          description: Get list products success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Get list products success
+                  status:
+                    type: number
+                    example: 200
+                  metadata:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/GetAllProductResponse"
+                  options:
+                    type: object
+                    properties:
+                      total:
+                        type: number
   /product/publish/{id}:
     post:
       tags:
@@ -199,6 +244,125 @@ paths:
                     type: number
                     example: 200
                   metadata:
+                    type: number
+                    example: 1
+  /product/unPublish/{id}:
+    post:
+      tags:
+        - product
+      summary: Unpublish product
+      operationId: unpublishProduct
+      parameters:
+        - name: x-client-id
+          in: header
+          schema:
+            type: string
+          required: true
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      security:
+        - BearerAuth: []
+        - x-api-key: []
+      responses:
+        "200":
+          description: Unpublish product success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Unpublish product success
+                  status:
+                    type: number
+                    example: 200
+                  metadata:
+                    type: number
+                    example: 1
+  /product/{id}:
+    patch:
+      tags:
+        - product
+      summary: update a product
+      operationId: updateProduct
+      parameters:
+        - name: x-client-id
+          in: header
+          schema:
+            type: string
+          required: true
+        - name: id
+          in: path
+          schema:
+            type: string
+          required: true
+
+      security:
+        - BearerAuth: []
+        - x-api-key: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProductRequest"
+      responses:
+        "201":
+          description: update product success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: update product success
+                  status:
+                    type: number
+                    example: 201
+                  metadata:
+                    $ref: "#/components/schemas/CreateProductResponse"
+    get:
+      tags:
+        - "product"
+      summary: get product
+      operationId: getProduct
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: number
+            default: 1
+          required: true
+        - name: limit
+          in: query
+          schema:
+            type: number
+            default: 50
+          required: true
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Get product success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Get product success
+                  status:
+                    type: number
+                    example: 200
+                  metadata:
                     $ref: "#/components/schemas/ProductResponse"
   /product/publish:
     get:
@@ -230,7 +394,98 @@ paths:
                     type: number
                     example: 200
                   metadata:
-                    $ref: "#/components/schemas/ProductResponse"
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ProductResponse"
+                  options:
+                    type: object
+                    properties:
+                      total:
+                        type: number
+  /product/draft:
+    get:
+      tags:
+        - product
+      summary: Get draft products
+      operationId: getDraftProducts
+      parameters:
+        - name: x-client-id
+          in: header
+          schema:
+            type: string
+          required: true
+      security:
+        - BearerAuth: []
+        - x-api-key: []
+      responses:
+        "200":
+          description: Get list success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Get list success
+                  status:
+                    type: number
+                    example: 200
+                  metadata:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ProductResponse"
+                  options:
+                    type: object
+                    properties:
+                      total:
+                        type: number
+  /product/search:
+    get:
+      tags:
+        - "product"
+      summary: search product
+      operationId: searchProduct
+      parameters:
+        - name: keySearch
+          in: query
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: number
+            default: 1
+          required: true
+        - name: limit
+          in: query
+          schema:
+            type: number
+            default: 50
+          required: true
+      responses:
+        "200":
+          description: Get list products success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Get list products success
+                  status:
+                    type: number
+                    example: 200
+                  metadata:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ProductResponse"
+                  options:
+                    type: object
+                    properties:
+                      total:
+                        type: number
 
 components:
   schemas:
@@ -336,59 +591,126 @@ components:
         product_price:
           type: number
         product_type:
-          enum:
-            - Clothing
-            - Electronic
-            - Furniture
+          $ref: "#/components/schemas/ProductType"
         product_thumb:
           type: string
         product_quantity:
           type: number
         product_attributes:
           $ref: "#/components/schemas/ProductAttribute"
-    
+
+    CreateProductResponse:
+      type: object
+      properties:
+        product_name:
+          type: string
+        product_thumb:
+          type: string
+        product_description:
+          type: string
+        product_price:
+          type: number
+        product_quantity:
+          type: number
+        product_type:
+          type: string
+        product_shop:
+          type: string
+        product_attributes:
+          type: object
+          properties:
+            brand:
+              type: string
+            size:
+              type: string
+            material:
+              type: string
+        product_ratingsAverage:
+          type: number
+        product_variation:
+          type: array
+        isDraft:
+          type: boolean
+        isPublish:
+          type: boolean
+        _id:
+          type: string
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+        product_slug:
+          type: string
+
     ProductResponse:
-        type: object
-        properties:
-          product_name:
-            type: string
-          product_thumb:
-            type: string
-          product_description:
-            type: string
-          product_price:
-            type: number
-          product_quantity:
-            type: number
-          product_type:
-            type: string
-          product_shop:
-            type: string
-          product_attributes:
-            type: object
-            properties:
-              brand:
-                type: string
-              size:
-                type: string
-              material:
-                type: string
-          product_ratingsAverage:
-            type: number
-          product_variation:
-            type: array
-          isDraft:
-            type: boolean
-          isPublish:
-            type: boolean
-          _id:
-            type: string
-          createdAt:
-            type: string
-          updatedAt:
-            type: string
-          product_slug:
-            type: string
+      type: object
+      properties:
+        _id:
+          type: string
+        product_name:
+          type: string
+        product_thumb:
+          type: string
+          format: uri
+        product_description:
+          type: string
+        product_price:
+          type: number
+        product_quantity:
+          type: number
+        product_type:
+          $ref: "#/components/schemas/ProductType"
+        product_shop:
+          type: object
+          properties:
+            name:
+              type: string
+            email:
+              type: string
+        product_attributes:
+          type: object
+          properties:
+            brand:
+              type: string
+            size:
+              type: string
+            material:
+              type: string
+        product_ratingsAverage:
+          type: number
+          format: float
+        product_variation:
+          type: array
+          items: {}
+        createdAt:
+          type: string
+          format: date-time
+          example: "2024-01-08T07:42:38.468Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2024-01-09T10:04:37.314Z"
+        product_slug:
+          type: string
+
+    ProductType:
+      type: string
+      enum:
+        - Clothing
+        - Electronic
+        - Furniture
+
+    GetAllProductResponse:
+      type: object
+      properties:
+        _id:
+          type: string
+        product_name:
+          type: string
+        product_thumb:
+          type: string
+        product_price:
+          type: number
 
   securitySchemes:
     BearerAuth:
