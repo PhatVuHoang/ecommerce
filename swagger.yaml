@@ -584,39 +584,39 @@ components:
     ProductRequest:
       type: object
       properties:
-        product_name:
+        productName:
           type: string
-        product_description:
+        productDescription:
           type: string
-        product_price:
+        productPrice:
           type: number
-        product_type:
+        productType:
           $ref: "#/components/schemas/ProductType"
-        product_thumb:
+        productThumb:
           type: string
-        product_quantity:
+        productQuantity:
           type: number
-        product_attributes:
+        productAttributes:
           $ref: "#/components/schemas/ProductAttribute"
 
     CreateProductResponse:
       type: object
       properties:
-        product_name:
+        productName:
           type: string
-        product_thumb:
+        productThumb:
           type: string
-        product_description:
+        productDescription:
           type: string
-        product_price:
+        productPrice:
           type: number
-        product_quantity:
+        productQuantity:
           type: number
-        product_type:
+        productType:
           type: string
-        product_shop:
+        productShop:
           type: string
-        product_attributes:
+        productAttributes:
           type: object
           properties:
             brand:
@@ -625,9 +625,9 @@ components:
               type: string
             material:
               type: string
-        product_ratingsAverage:
+        productRatingsAverage:
           type: number
-        product_variation:
+        productVariation:
           type: array
         isDraft:
           type: boolean
@@ -639,7 +639,7 @@ components:
           type: string
         updatedAt:
           type: string
-        product_slug:
+        productSlug:
           type: string
 
     ProductResponse:
@@ -647,27 +647,27 @@ components:
       properties:
         _id:
           type: string
-        product_name:
+        productName:
           type: string
-        product_thumb:
+        productThumb:
           type: string
           format: uri
-        product_description:
+        productDescription:
           type: string
-        product_price:
+        productPrice:
           type: number
-        product_quantity:
+        productQuantity:
           type: number
-        product_type:
+        productType:
           $ref: "#/components/schemas/ProductType"
-        product_shop:
+        productShop:
           type: object
           properties:
             name:
               type: string
             email:
               type: string
-        product_attributes:
+        productAttributes:
           type: object
           properties:
             brand:
@@ -676,10 +676,10 @@ components:
               type: string
             material:
               type: string
-        product_ratingsAverage:
+        productRatingsAverage:
           type: number
           format: float
-        product_variation:
+        productVariation:
           type: array
           items: {}
         createdAt:
@@ -690,7 +690,7 @@ components:
           type: string
           format: date-time
           example: "2024-01-09T10:04:37.314Z"
-        product_slug:
+        productSlug:
           type: string
 
     ProductType:
@@ -705,11 +705,11 @@ components:
       properties:
         _id:
           type: string
-        product_name:
+        productName:
           type: string
-        product_thumb:
+        productThumb:
           type: string
-        product_price:
+        productPrice:
           type: number
 
   securitySchemes:

@@ -8,10 +8,10 @@ const findAllDraftForShop = async ({ query, limit, page }) => {
   return await queryProduct({ query, limit, page });
 };
 
-const publishProductByShop = async ({ product_shop, product_id }) => {
+const publishProductByShop = async ({ productShop, productId }) => {
   const foundShop = await product.findOne({
-    product_shop: new Types.ObjectId(product_shop),
-    _id: new Types.ObjectId(product_id),
+    productShop: new Types.ObjectId(productShop),
+    _id: new Types.ObjectId(productId),
   });
 
   if (!foundShop) {
@@ -25,10 +25,10 @@ const publishProductByShop = async ({ product_shop, product_id }) => {
   return modifiedCount;
 };
 
-const unPublishProductByShop = async ({ product_shop, product_id }) => {
+const unPublishProductByShop = async ({ productShop, productId }) => {
   const foundShop = await product.findOne({
-    product_shop: new Types.ObjectId(product_shop),
-    _id: new Types.ObjectId(product_id),
+    productShop: new Types.ObjectId(productShop),
+    _id: new Types.ObjectId(productId),
   });
 
   if (!foundShop) {
@@ -50,7 +50,7 @@ const queryProduct = async ({ query, limit, page }) => {
   const skip = (page - 1) * limit;
   return await product
     .find(query)
-    .populate("product_shop", "name email -_id")
+    .populate("productShop", "name email -_id")
     .sort({ updatedAt: -1 })
     .skip(skip)
     .limit(limit)
@@ -100,8 +100,8 @@ const findAllProducts = async ({ limit, sort, page, filter, select }) => {
   return products;
 };
 
-const findProduct = async ({ product_id, unSelect }) => {
-  return await product.findById(product_id).select(getUnSelectData(unSelect));
+const findProduct = async ({ productId, unSelect }) => {
+  return await product.findById(productId).select(getUnSelectData(unSelect));
 };
 
 const updateProductById = async ({

@@ -8,45 +8,45 @@ const COLLECTION_NAME = "Products";
 
 const productSchema = new Schema(
   {
-    product_name: {
+    productName: {
       type: String,
       required: true,
     },
-    product_thumb: {
+    productThumb: {
       type: String,
       required: true,
     },
-    product_description: String,
-    product_slug: String,
-    product_price: {
+    productDescription: String,
+    productSlug: String,
+    productPrice: {
       type: Number,
       required: true,
     },
-    product_quantity: {
+    productQuantity: {
       type: Number,
       required: true,
     },
-    product_type: {
+    productType: {
       type: String,
       required: true,
       enum: ["Electronic", "Clothing", "Furniture"],
     },
-    product_shop: {
+    productShop: {
       type: Schema.Types.ObjectId,
       ref: "Shop",
     },
-    product_attributes: {
+    productAttributes: {
       type: Schema.Types.Mixed,
       required: true,
     },
-    product_ratingsAverage: {
+    productRatingsAverage: {
       type: Number,
       default: 4.5,
       min: [1, "Rating must be above 1.0"],
       max: [5, "Rating must be below 5.0"],
       set: (val) => Math.round(val * 10) / 10,
     },
-    product_variation: {
+    productVariation: {
       type: Array,
       default: [],
     },
@@ -69,10 +69,10 @@ const productSchema = new Schema(
   }
 );
 
-productSchema.index({ product_name: "text", product_description: "text" });
+productSchema.index({ productName: "text", productDescription: "text" });
 
 productSchema.pre("save", function (next) {
-  this.product_slug = slugify(this.product_name, { lower: true });
+  this.productSlug = slugify(this.productName, { lower: true });
   next();
 });
 
@@ -84,7 +84,7 @@ const clothingSchema = new Schema(
     },
     size: String,
     material: String,
-    product_shop: {
+    productShop: {
       type: Schema.Types.ObjectId,
       ref: "Shop",
     },
@@ -103,7 +103,7 @@ const electronicSchema = new Schema(
     },
     model: String,
     color: String,
-    product_shop: {
+    productShop: {
       type: Schema.Types.ObjectId,
       ref: "Shop",
     },
@@ -122,7 +122,7 @@ const furnitureSchema = new Schema(
     },
     size: String,
     material: String,
-    product_shop: {
+    productShop: {
       type: Schema.Types.ObjectId,
       ref: "Shop",
     },

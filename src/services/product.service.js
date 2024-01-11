@@ -41,21 +41,21 @@ class ProductFactory {
     return new productClass(payload).updateProduct(productId);
   }
 
-  static async findAllDraftForShop({ product_shop, limit = 50, page = 1 }) {
-    const query = { product_shop, isDraft: true };
+  static async findAllDraftForShop({ productShop, limit = 50, page = 1 }) {
+    const query = { productShop, isDraft: true };
     return await findAllDraftForShop({ query, page, limit });
   }
 
-  static async publishProductByShop({ product_shop, product_id }) {
-    return await publishProductByShop({ product_shop, product_id });
+  static async publishProductByShop({ productShop, productId }) {
+    return await publishProductByShop({ productShop, productId });
   }
 
-  static async unPublishProductByShop({ product_shop, product_id }) {
-    return await unPublishProductByShop({ product_shop, product_id });
+  static async unPublishProductByShop({ productShop, productId }) {
+    return await unPublishProductByShop({ productShop, productId });
   }
 
-  static async findAllPublishForShop({ product_shop, limit = 50, page = 1 }) {
-    const query = { product_shop, isPublish: true };
+  static async findAllPublishForShop({ productShop, limit = 50, page = 1 }) {
+    const query = { productShop, isPublish: true };
     return await findAllPublishForShop({ query, page, limit });
   }
 
@@ -74,13 +74,13 @@ class ProductFactory {
       limit,
       page,
       sort,
-      select: ["product_name", "product_price", "product_thumb"],
+      select: ["productName", "productPrice", "productThumb"],
     });
   }
 
-  static async findProduct({ product_id }) {
+  static async findProduct({ productId }) {
     return await findProduct({
-      product_id,
+      productId,
       unSelect: ["__v"],
     });
   }
@@ -88,27 +88,27 @@ class ProductFactory {
 
 class Product {
   constructor({
-    product_name,
-    product_thumb,
-    product_description,
-    product_price,
-    product_quantity,
-    product_type,
-    product_shop,
-    product_attributes,
+    productName,
+    productThumb,
+    productDescription,
+    productPrice,
+    productQuantity,
+    productType,
+    productShop,
+    productAttributes,
   }) {
-    this.product_name = product_name;
-    this.product_thumb = product_thumb;
-    this.product_description = product_description;
-    this.product_price = product_price;
-    this.product_quantity = product_quantity;
-    this.product_type = product_type;
-    this.product_shop = product_shop;
-    this.product_attributes = product_attributes;
+    this.productName = productName;
+    this.productThumb = productThumb;
+    this.productDescription = productDescription;
+    this.productPrice = productPrice;
+    this.productQuantity = productQuantity;
+    this.productType = productType;
+    this.productShop = productShop;
+    this.productAttributes = productAttributes;
   }
 
-  async createProduct(product_id) {
-    return await product.create({ ...this, _id: product_id });
+  async createProduct(productId) {
+    return await product.create({ ...this, _id: productId });
   }
 
   async updateProduct(productId, payload) {
@@ -119,8 +119,8 @@ class Product {
 class Clothing extends Product {
   async createProduct() {
     const newClothing = await clothing.create({
-      ...this.product_attributes,
-      product_shop: this.product_shop,
+      ...this.productAttributes,
+      productShop: this.productShop,
     });
     if (!newClothing) {
       throw new BadRequestError("Create new clothing error");
@@ -136,7 +136,7 @@ class Clothing extends Product {
 
   async updateProduct(productId) {
     const objectParams = removeUndefinedObject(updateNestedObject(this));
-    if (objectParams.product_attributes) {
+    if (objectParams.productAttributes) {
       await updateProductById({
         productId,
         payload: objectParams,
@@ -151,8 +151,8 @@ class Clothing extends Product {
 class Electronic extends Product {
   async createProduct() {
     const newElectronic = await electronic.create({
-      ...this.product_attributes,
-      product_shop: this.product_shop,
+      ...this.productAttributes,
+      productShop: this.productShop,
     });
     if (!newElectronic) {
       throw new BadRequestError("Create new electronic error");
@@ -168,7 +168,7 @@ class Electronic extends Product {
 
   async updateProduct(productId) {
     const objectParams = removeUndefinedObject(updateNestedObject(this));
-    if (objectParams.product_attributes) {
+    if (objectParams.productAttributes) {
       await updateProductById({
         productId,
         payload: objectParams,
@@ -183,8 +183,8 @@ class Electronic extends Product {
 class Furniture extends Product {
   async createProduct() {
     const newFurniture = await furniture.create({
-      ...this.product_attributes,
-      product_shop: this.product_shop,
+      ...this.productAttributes,
+      productShop: this.productShop,
     });
     if (!newFurniture) {
       throw new BadRequestError("Create new electronic error");
@@ -200,7 +200,7 @@ class Furniture extends Product {
 
   async updateProduct(productId) {
     const objectParams = removeUndefinedObject(updateNestedObject(this));
-    if (objectParams.product_attributes) {
+    if (objectParams.productAttributes) {
       await updateProductById({
         productId,
         payload: objectParams,

@@ -7,6 +7,9 @@ const swaggerJSDoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
 const cors = require("cors");
 const routes = require("./routes");
+const {
+  app: { port },
+} = require("./configs");
 
 const options = {
   definition: {
@@ -17,7 +20,7 @@ const options = {
     },
     servers: [
       {
-        url: "http://localhost:3000/v1/api",
+        url: `http://localhost:${port}/v1/api`,
         description: "Local server",
       },
     ],

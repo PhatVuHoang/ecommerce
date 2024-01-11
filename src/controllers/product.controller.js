@@ -3,12 +3,12 @@ const { Created, OK } = require("../core/success.response");
 
 class ProductController {
   createProduct = async (req, res, next) => {
-    const { product_type } = req.body;
+    const { productType } = req.body;
     new Created({
       message: "Create product success",
-      metadata: await ProductService.createProduct(product_type, {
+      metadata: await ProductService.createProduct(productType, {
         ...req.body,
-        product_shop: req.user.userId,
+        productShop: req.user.userId,
       }),
     }).send(res);
   };
@@ -17,11 +17,11 @@ class ProductController {
     new OK({
       message: "update product success",
       metadata: await ProductService.updateProduct(
-        req.body.product_type,
+        req.body.productType,
         req.params.id,
         {
           ...req.body,
-          product_shop: req.user.userId,
+          productShop: req.user.userId,
         }
       ),
     }).send(res);
@@ -31,8 +31,8 @@ class ProductController {
     new OK({
       message: "Publish product success",
       metadata: await ProductService.publishProductByShop({
-        product_id: req.params.id,
-        product_shop: req.user.userId,
+        productId: req.params.id,
+        productShop: req.user.userId,
       }),
     }).send(res);
   };
@@ -41,8 +41,8 @@ class ProductController {
     new OK({
       message: "Unpublish product success",
       metadata: await ProductService.unPublishProductByShop({
-        product_id: req.params.id,
-        product_shop: req.user.userId,
+        productId: req.params.id,
+        productShop: req.user.userId,
       }),
     }).send(res);
   };
@@ -69,7 +69,7 @@ class ProductController {
   getAllDraftsForShop = async (req, res, next) => {
     const result = await ProductService.findAllDraftForShop({
       ...req.query,
-      product_shop: req.user.userId,
+      productShop: req.user.userId,
     });
     new OK({
       message: "Get list success",
@@ -89,7 +89,7 @@ class ProductController {
   getAllPublishForShop = async (req, res, next) => {
     const result = await ProductService.findAllPublishForShop({
       ...req.query,
-      product_shop: req.user.userId,
+      productShop: req.user.userId,
     });
     new OK({
       message: "Get list success",
@@ -115,7 +115,7 @@ class ProductController {
     new OK({
       message: "Get product success",
       metadata: await ProductService.findProduct({
-        product_id: req.params.id,
+        productId: req.params.id,
       }),
     }).send(res);
   };
