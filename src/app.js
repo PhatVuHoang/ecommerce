@@ -20,8 +20,10 @@ const options = {
     },
     servers: [
       {
-        url: `http://localhost:${port}/v1/api`,
-        description: "Local server",
+        url:
+          process.env.NODE_ENV === "develop"
+            ? `http://localhost:${port}/v1/api`
+            : process.env.BASE_URI_PROD,
       },
     ],
     security: [
