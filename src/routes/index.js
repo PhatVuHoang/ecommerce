@@ -3,6 +3,7 @@
 const express = require("express");
 const access = require("./access");
 const product = require("./product");
+const discount = require("./discount");
 const { apiKey, permission } = require("../auth/checkAuth");
 
 const router = express.Router();
@@ -10,6 +11,7 @@ const router = express.Router();
 router.use(apiKey);
 router.use(permission("0000"));
 
+router.use("/discount", discount);
 router.use("/product", product);
 router.use("/authentication", access);
 

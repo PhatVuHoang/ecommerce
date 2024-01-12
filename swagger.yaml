@@ -7,6 +7,7 @@ servers:
 tags:
   - name: authentication
   - name: product
+  - name: discount
 security:
   - x-api-key: []
 
@@ -486,6 +487,166 @@ paths:
                     properties:
                       total:
                         type: number
+  /discount:
+    post:
+      tags:
+        - discount
+      summary: Create a discount code
+      operationId: createDiscount
+      security:
+        - BearerAuth: []
+        - x-api-key: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateDiscountRequest"
+      parameters:
+        - name: x-client-id
+          in: header
+          schema:
+            type: string
+          required: true
+      responses:
+        "201":
+          description: Create a new discount success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Create a new discount success
+                  status:
+                    type: number
+                    example: 201
+                  metadata:
+                    $ref: "#/components/schemas/CreateProductResponse"
+    get:
+      tags:
+        - discount
+      summary: Get all discount code for shop
+      operationId: getDiscountCodeByShop
+      security:
+        - BearerAuth: []
+        - x-api-key: []
+      parameters:
+        - name: x-client-id
+          in: header
+          schema:
+            type: string
+          required: true
+      responses:
+        "200":
+          description: Get all discount code success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Get all discount code success
+                  status:
+                    type: number
+                    example: 200
+                  metadata:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/GetAllDiscountCodesByShopResponse"
+  /discount/list-product-code:
+    get:
+      tags:
+        - discount
+      summary: Get all discount code with product
+      operationId: getAllDiscountCodeWithProduct
+      parameters:
+        - name: shopId
+          in: query
+          schema:
+            type: string
+          required: true
+        - name: code
+          in: query
+          schema:
+            type: string
+          required: true
+        - name: page
+          in: query
+          schema:
+            type: number
+            default: 1
+          required: true
+        - name: limit
+          in: query
+          schema:
+            type: number
+            default: 50
+          required: true
+      responses:
+        "200":
+          description: Get all discount code success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Get all discount code success
+                  status:
+                    type: number
+                    example: 200
+                  metadata:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/getAllDiscountCodeWithProduct"
+  /discount/amount:
+    get:
+      tags:
+        - discount
+      summary: Get discount amount
+      operationId: getDiscountAmount
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code:
+                  type: string
+                userId:
+                  type: number
+                shopId:
+                  type: string
+                product:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      productId:
+                        type: string
+                      quantity:
+                        type: number
+                      price:
+                        type: number
+      responses:
+        "200":
+          description: Get discount amount success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Get discount amount success
+                  status:
+                    type: number
+                    example: 200
+                  metadata:
+                    $ref: "#/components/schemas/GetDiscountAmountResponse"
 
 components:
   schemas:
@@ -498,7 +659,6 @@ components:
           type: string
         password:
           type: string
-
     SignUpResponse:
       type: object
       properties:
@@ -518,7 +678,6 @@ components:
               type: string
             refreshToken:
               type: string
-
     LoginRequest:
       type: object
       properties:
@@ -526,7 +685,6 @@ components:
           type: string
         password:
           type: string
-
     LoginResponse:
       properties:
         shop:
@@ -545,14 +703,12 @@ components:
               type: string
             refreshToken:
               type: string
-
     LogoutResponse:
       properties:
         acknowledged:
           type: boolean
         deletedCount:
           type: number
-
     RefreshTokenResponse:
       type: object
       properties:
@@ -570,7 +726,6 @@ components:
               type: string
             refreshToken:
               type: string
-
     ProductAttribute:
       type: object
       properties:
@@ -580,7 +735,6 @@ components:
           type: string
         material:
           type: string
-
     ProductRequest:
       type: object
       properties:
@@ -598,7 +752,6 @@ components:
           type: number
         productAttributes:
           $ref: "#/components/schemas/ProductAttribute"
-
     CreateProductResponse:
       type: object
       properties:
@@ -641,7 +794,6 @@ components:
           type: string
         productSlug:
           type: string
-
     ProductResponse:
       type: object
       properties:
@@ -692,14 +844,186 @@ components:
           example: "2024-01-09T10:04:37.314Z"
         productSlug:
           type: string
-
     ProductType:
       type: string
       enum:
         - Clothing
         - Electronic
         - Furniture
-
+    CreateDiscountRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        type:
+          type: string
+          enum:
+            - fixed_amount
+            - percentage
+        value:
+          type: number
+        maxValue:
+          type: number
+        code:
+          type: string
+        startDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+        maxUses:
+          type: number
+        usedCount:
+          type: number
+        userUsed:
+          type: array
+          items: {}
+        maxUsePerUser:
+          type: number
+        minOrderValue:
+          type: number
+        isActive:
+          type: boolean
+        applyTo:
+          type: string
+          enum:
+            - all
+            - specific
+          default: specific
+        productId:
+          type: array
+          items:
+            type: string
+    CreateDiscountResponse:
+      type: object
+      properties:
+        discountName:
+          type: string
+        discountDescription:
+          type: string
+        discountType:
+          type: string
+          enum:
+            - fixed_amount
+            - percentage
+        discountValue:
+          type: number
+        discountMaxValue:
+          type: number
+        discountCode:
+          type: string
+        discountStartDate:
+          type: string
+          format: date-time
+        discountEndDate:
+          type: string
+          format: date-time
+        discountMaxUses:
+          type: number
+        discountUsedCount:
+          type: number
+        discountUsersUsed:
+          type: array
+          items:
+            type: string
+        discountMaxUsePerUser:
+          type: number
+        discountMinOrderValue:
+          type: number
+        discountShopId:
+          type: string
+        discountIsActive:
+          type: boolean
+        discountApplyTo:
+          type: string
+          enum:
+            - all
+            - specific
+        discountProductIds:
+          type: array
+          items:
+            type: string
+        _id:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        __v:
+          type: number
+    GetAllDiscountCodesByShopResponse:
+      type: object
+      properties:
+        _id:
+          type: string
+        discountName:
+          type: string
+        discountDescription:
+          type: string
+        discountType:
+          type: string
+          enum:
+            - percentage
+            - fixed_amount
+        discountValue:
+          type: number
+        discountMaxValue:
+          type: number
+        discountCode:
+          type: string
+        discountStartDate:
+          type: string
+          format: date-time
+        discountEndDate:
+          type: string
+          format: date-time
+        discountMaxUses:
+          type: number
+        discountUsedCount:
+          type: number
+        discountUsersUsed:
+          type: array
+          items:
+            type: string
+        discountMaxUsePerUser:
+          type: number
+        discountMinOrderValue:
+          type: number
+        discountIsActive:
+          type: boolean
+        discountApplyTo:
+          type: string
+        discountProductIds:
+          type: array
+          items:
+            type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    getAllDiscountCodeWithProduct:
+      type: object
+      properties:
+        _id:
+          type: string
+        productName:
+          type: string
+    GetDiscountAmountResponse:
+      type: object
+      properties:
+        totalOrder:
+          type: number
+        discount:
+          type: number
+        totalPrice:
+          type: number
     GetAllProductResponse:
       type: object
       properties:

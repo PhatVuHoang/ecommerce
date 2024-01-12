@@ -43,7 +43,19 @@ const findAllDiscountCodesSelect = async ({
   return discounts;
 };
 
+const updateDiscountById = async (discountId, payload) => {
+  return await discountModel.findOneAndUpdate(discountId, objectParams, {
+    isNew: true,
+  });
+};
+
+const checkDiscountIsExists = async (filter) => {
+  return await discountModel.findOne(filter).lean();
+};
+
 module.exports = {
   findAllDiscountCodesUnSelect,
   findAllDiscountCodesSelect,
+  updateDiscountById,
+  checkDiscountIsExists,
 };
