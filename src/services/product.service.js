@@ -77,7 +77,7 @@ class ProductFactory {
       limit,
       page,
       sort,
-      select: ["productName", "productPrice", "productThumb"],
+      select: ["productName", "productPrice", "productThumb", "productShop"],
     });
   }
 
