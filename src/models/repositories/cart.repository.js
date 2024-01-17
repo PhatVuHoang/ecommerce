@@ -1,4 +1,5 @@
 const { NotFoundError } = require("../../core/error.response");
+const { convertToObjectIdMongodb } = require("../../utils");
 const cartModel = require("../cart.model");
 const { getProductById } = require("./product.repository");
 
@@ -45,7 +46,15 @@ const updateUserCartQuantity = async ({ userId, product }) => {
   return await cartModel.findOneAndUpdate(query, updateSet, options);
 };
 
+const findCartById = async (cartId) => {
+  return await cartModel.findOne({
+    _id: convertToObjectIdMongodb(cartId),
+    cart_state: "active",
+  });
+};
+
 module.exports = {
   createUserCart,
   updateUserCartQuantity,
+  findCartById,
 };

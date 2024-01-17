@@ -177,6 +177,7 @@ class DiscountService {
       discountUsersUsed,
       discountType,
       discountValue,
+      discountProductIds,
     } = foundDiscount;
     if (!discountIsActive) {
       throw new BadRequestError("Discount expired");
