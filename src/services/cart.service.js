@@ -58,13 +58,13 @@ class CartService {
     if (!foudProduct) {
       throw new NotFoundError("Not found a product");
     }
-    console.log(foudProduct.productShop.toString());
+
     if (foudProduct.productShop.toString() !== shop_order_ids[0]?.shopId) {
       throw new NotFoundError("Product do not belong to the shop");
     }
 
     if (quantity === 0) {
-      // delete
+      CartService.deleteUserCart({ userId, productId });
     }
 
     return await updateUserCartQuantity({
