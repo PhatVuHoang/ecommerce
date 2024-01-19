@@ -93,6 +93,28 @@ class CheckoutService {
       checkout_order,
     };
   }
+
+  static async orderByUser({
+    shop_order_ids,
+    cartId,
+    userId,
+    user_address = {},
+    user_payment,
+  }) {
+    const { shop_order_ids_new, checkout_order } =
+      await CheckoutService.checkoutReview({
+        cartId,
+        shop_order_ids,
+        userId,
+      });
+
+    // check lai mot lan nua xem vuot ton kho hay khong
+    // get new array Products
+    const products = shop_order_ids_new.flatMap((order) => order.item_products);
+    for (let i = 0; i < products.length; i++) {
+      const { productId, quantity } = products[i];
+    }
+  }
 }
 
 module.exports = CheckoutService;
