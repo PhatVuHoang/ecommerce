@@ -6,7 +6,8 @@ const {
   checkProductByServer,
 } = require("../models/repositories/product.repository");
 const { getDiscountAmount } = require("./discount.service");
-
+const { acquireLock, releaseLock } = require("./redis.service");
+const orderModel = require("../models/order.model");
 class CheckoutService {
   /**
     {
@@ -111,10 +112,48 @@ class CheckoutService {
     // check lai mot lan nua xem vuot ton kho hay khong
     // get new array Products
     const products = shop_order_ids_new.flatMap((order) => order.item_products);
+    const acquireProduct = [];
     for (let i = 0; i < products.length; i++) {
       const { productId, quantity } = products[i];
+      const keyLock = await acquireLock(productId, quantity, cartId);
+      acquireLock.push(!!keyLock);
+      if (keyLock) {
+        await releaseLock(keyLock);
+      }
+    }
+
+    if (acquireLock.includes(false)) {
+      throw new BadRequestError(
+        "Mot so san pham da duoc cap nhat! Vui long quay lai gio hang..."
+      );
+    }
+
+    const newOrder = await orderModel.create({
+      order_userId: userId,
+      order_checkout: checkout_order,
+      order_shipping: user_address,
+      order_payment: user_payment,
+      order_products: shop_order_ids_new,
+    });
+
+    // truong hop: neu insert thanh cong, thi remove product co trong cart
+    if (newOrder) {
+      // remove product in my cart
     }
   }
+
+  // 1- query orders [users]
+  static async getOrdersByUser() {}
+
+  // 1 - query order using id [users]
+
+  static async getOneOrderByUser() {}
+
+  // 1 - cancel order [users]
+  static async cancelOrderByUser() {}
+
+  // 1- update order status [shop | admin]
+  static async updateOrderStatusByShop() {}
 }
 
 module.exports = CheckoutService;

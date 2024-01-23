@@ -1,3 +1,4 @@
+const { convertToObjectIdMongodb } = require("../../utils");
 const inventoryModel = require("../inventory.model");
 
 const insertInventory = async ({
@@ -14,6 +15,32 @@ const insertInventory = async ({
   });
 };
 
+const reservationInventory = async ({ productId, quantity, cartId }) => {
+  const query = {
+    inventoryProductId: convertToObjectIdMongodb(productId),
+    inventoryStock: { $gte: quantity },
+  };
+  const updateSet = {
+    $inc: {
+      inventoryStock: -quantity,
+    },
+    $push: {
+      inventoryReservation: {
+        quantity,
+        cartId,
+        createdAt: new Date(),
+      },
+    },
+  };
+  const options = {
+    upsert: true,
+    new: true,
+  };
+
+  return await inventoryModel.updateOne(query, updateSet, options);
+};
+
 module.exports = {
   insertInventory,
+  reservationInventory,
 };
